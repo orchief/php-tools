@@ -38,29 +38,32 @@ trait DataList
             }
         }
 
-        // 排序
+        // 排序update
         if ($this->orderByString) {
-            $orderArr = explode('.', $this->orderByString);
-            if (!isset($this->union_fuzzyConditions)) {
-                if ($orderArr[1] == 'descending') {
-                    $Model = $Model->order('' . $this->name . '.' . $orderArr[0] . ' DESC');
-                } else {
-                    $Model = $Model->order('' . $this->name . '.' . $orderArr[0]);
-                }
-            } else {
-                $union = $this->union_fuzzyConditions;
-                foreach ($union as $k => $v) {
-                    if ($v[1] == $orderArr[0]) {
-                        if ($orderArr[1] == 'descending') {
-                            $Model = $Model->order($v[0] . '.' . $orderArr[0] . ' DESC');
-                        } else {
-                            $Model = $Model->order($v[0] . '.' . $orderArr[0]);
-                        }
+            $ArrOrderString = explode(',', $orderString);
+            foreach($ArrOrderString as $k => $orderString){
+                $orderArr = explode('.', $orderString);
+                if (!isset($this->union_fuzzyConditions)) {
+                    if ($orderArr[1] == 'desc') {
+                        $Model = $Model->order($this->name . '.' . $orderArr[0] . ' DESC');
                     } else {
-                        if ($orderArr[1] == 'descending') {
-                            $Model = $Model->order('' . $this->name . '.' . $orderArr[0] . ' DESC');
+                        $Model = $Model->order($this->name . '.' . $orderArr[0]);
+                    }
+                } else {
+                    $union = $this->union_fuzzyConditions;
+                    foreach ($union as $k => $v) {
+                        if ($v[1] == $orderArr[0]) {
+                            if ($orderArr[1] == 'desc') {
+                                $Model = $Model->order($v[0] . '.' . $orderArr[0] . ' DESC');
+                            } else {
+                                $Model = $Model->order($v[0] . '.' . $orderArr[0]);
+                            }
                         } else {
-                            $Model = $Model->order('' . $this->name . '.' . $orderArr[0]);
+                            if ($orderArr[1] == 'desc') {
+                                $Model = $Model->order($this->name . '.' . $orderArr[0] . ' DESC');
+                            } else {
+                                $Model = $Model->order($this->name . '.' . $orderArr[0]);
+                            }
                         }
                     }
                 }
